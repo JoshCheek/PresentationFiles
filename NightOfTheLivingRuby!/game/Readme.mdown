@@ -12,7 +12,9 @@ Usage
 
 Get a copy of shoes and run app.rb with it.
 
-Zombies have no braaains, and rubies are red, like the blood they are thirsty for. Protect the beloved Ruby for as long as you can by BONK!ing the zombie back with your BONK! stick. Rack up a killer BONK! count and snark at your friends.
+Zombies have no braaains, and have thus mistaken our rubyglobin for their hemoglobin. 
+
+Your task, if you should choose to accept it is to protect the beloved Ruby for as long as you can by BONK!ing the zombie back with your BONK! stick. Rack up a killer BONK! count and snark at your friends.
 
 Dependencies
 ============
