@@ -3,6 +3,9 @@ Description
 
 **Night of the Living Ruby** game, for the **Night of the Living Ruby** presentation I am giving at WSU, 30 Oct 2010.
 
+![Night of the Living Ruby screen shot](http://github.com/JoshCheek/PresentationFiles/raw/master/NightOfTheLivingRuby!/game/screenshot.png)
+                                        
+
 
 Usage
 =====
