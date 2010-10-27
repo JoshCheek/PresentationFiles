@@ -19,10 +19,10 @@ Dependencies
 Credit Where Credit Is Due
 ==========================
 
-[The Zombie](http://www.zombies-and-horror-movies.com/cartoon-zombies.html)
-[The Ruby (you can put it on a shirt!)](http://www.rubyrags.com/products/3)
-[The Forest](http://morguefile.com/archive/display/143950)
-[The Font](http://www.1001fonts.com/font_details.html?font_id=2895)
+* [The Zombie](http://www.zombies-and-horror-movies.com/cartoon-zombies.html)
+* [The Ruby (you can put it on a shirt!)](http://www.rubyrags.com/products/3)
+* [The Forest](http://morguefile.com/archive/display/143950)
+* [The Font](http://www.1001fonts.com/font_details.html?font_id=2895)
 
 
 ---------------------------------------
