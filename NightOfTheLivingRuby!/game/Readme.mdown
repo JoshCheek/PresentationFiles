@@ -1,7 +1,12 @@
 Description
 ===========
 
-**Night of the Living Ruby** game, for the **Night of the Living Ruby** presentation I am giving at WSU, 30 Oct 2010.
+**Night of the Living Ruby** THE VIDEO GAME!
+
+Zombies have no braaains, and have thus mistaken our rubyglobin for their hemoglobin. 
+
+Your task, should you choose to accept it, is to protect the beloved Ruby for as long as you can by BONK!ing the zombie back with your BONK! stick. Rack up a killer BONK! count and snark at your friends.
+
 
 ![Night of the Living Ruby screen shot](http://github.com/JoshCheek/PresentationFiles/raw/master/NightOfTheLivingRuby!/game/screenshot.png)
                                         
@@ -11,10 +16,6 @@ Usage
 =====
 
 Get a copy of shoes and run app.rb with it.
-
-Zombies have no braaains, and have thus mistaken our rubyglobin for their hemoglobin. 
-
-Your task, if you should choose to accept it is to protect the beloved Ruby for as long as you can by BONK!ing the zombie back with your BONK! stick. Rack up a killer BONK! count and snark at your friends.
 
 Dependencies
 ============
