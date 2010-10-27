@@ -39,44 +39,36 @@ Shoes.app :width => 1200 , :height => 800 , :resizable => false do
     attr_accessor :bonk_count
     def initialize(app)
       @bonk_count = @rotation = 0
-      @x = -500
-      @y = 50
       @image = app.image('zombie.png') { bonk! }
-      @image.move @x , @y
+      @image.move -500 , 75
     end
     def bonk!
       @bonk_count += 1
-      @x -= 150 
+      @image.left -= 150 
     end
     def draw
       new_rotation = rand(30)-10
       @image.rotate new_rotation - @rotation
       @rotation = new_rotation
-      @x += ( @rotation > 0 ? @rotation : @rotation/2 ) + 10
-      @image.move @x , @y
+      @image.left += ( @rotation > 0 ? @rotation : @rotation/2 ) + 10
     end
     def has_ruby?
-      @x > 550
+      @image.left > 550
     end
   end
   
   
   class BonkStick
     def initialize(app)
-      @up = true
-      @x = @y = 500
+      @up = true                    # track whether stick is up or down
+      @x = @y = -50
       @image = app.image 'club.png'
-      app.click { bonk! }
-      follow_mouse app
+      app.click { bonk! }           # register for when the mouse is clicked
+      app.motion &method(:move)     # register for whent he mouse is moved
+      move                          # initially place the bonk stick offscreen
     end
     def bonk!
-      if up?
-        @image.rotate 90
-        down!
-      else
-        @image.rotate -90
-        up!
-      end
+      if up? then down! else up! end
       move
     end
     def move(x=@x,y=@y)
@@ -87,16 +79,15 @@ Shoes.app :width => 1200 , :height => 800 , :resizable => false do
         @image.move @x-180 , @y-105
       end
     end
-    def follow_mouse(app)
-      app.motion &method(:move)
-    end
     def up?
       @up
     end
     def down!
+      @image.rotate 90
       @up = false
     end
     def up!
+      @image.rotate -90
       @up = true
     end
   end
@@ -110,10 +101,13 @@ Shoes.app :width => 1200 , :height => 800 , :resizable => false do
   # the background
   # background( image "haunted_forest.jpg" , :width => '100%' , :height => '100%' )
   background "haunted_forest.jpg"
-
+  # background "#F3F".."#F90"
+  
+  
   # the title
   font 'Deanna.ttf'
-  para "Night of the Living Ruby" , :align => 'center' , :font => 'Deanna' , :height => 100 , :size => 75 , :stroke => red
+  title 'NIGHT OF THE LIVING RUBY!' , :align => 'center' , :font => 'Deanna' , :height => 100 , :size => 75 , :stroke => red
+
 
   # the zombie
   @zombie = HungryZombie.new self
