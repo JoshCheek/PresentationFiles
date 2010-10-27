@@ -85,11 +85,11 @@ Shoes.app :width => 1180 , :height => 800 , :resizable => false do
     end
   end
   
+  
   class BonkDisplay
     attr_reader :count
     def initialize(app)
-      @app = app
-      @paragraph = @app.para "BONK! COUNT: 0" , :stroke => app.red , :size => 20
+      @paragraph = app.para "BONK! COUNT: 0" , :stroke => app.red , :size => 20
       @paragraph.move 900 , 725
       @count = 0
     end
