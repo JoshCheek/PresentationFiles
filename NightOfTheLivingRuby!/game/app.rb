@@ -62,7 +62,6 @@ Shoes.app :width => 1200 , :height => 800 , :resizable => true do
   
   class BonkStick
     def initialize(app)
-      log (app.methods-Object.methods-Object.new.methods).sort
       @up = true
       @x = @y = 500
       @image = app.image 'club.png'
@@ -72,10 +71,10 @@ Shoes.app :width => 1200 , :height => 800 , :resizable => true do
     def bonk!
       if up?
         @image.rotate 90
-        @up = false
+        down!
       else
         @image.rotate -90
-        @up = true
+        up!
       end
       move
     end
@@ -93,7 +92,14 @@ Shoes.app :width => 1200 , :height => 800 , :resizable => true do
     def up?
       @up
     end
+    def down!
+      @up = false
+    end
+    def up!
+      @up = true
+    end
   end
+  
   
   def game_over
     alert "ZOMBIE HAS RUBY!\n\nGame over, your bonk count was #{@zombie.bonk_count}."
@@ -116,11 +122,9 @@ Shoes.app :width => 1200 , :height => 800 , :resizable => true do
 
   # the ruby
   @dancing_ruby = DancingRuby.new self
-  animate 2 do
-    @dancing_ruby.draw
-  end
+  animate(2) { @dancing_ruby.draw }
   
   # the club
-  club = BonkStick.new self
+  @club = BonkStick.new self
     
 end
