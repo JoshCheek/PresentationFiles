@@ -10,7 +10,7 @@ end
 
 
 
-Shoes.app :width => 1200 , :height => 800 , :resizable => true do
+Shoes.app :width => 1200 , :height => 800 , :resizable => false do
   
   
   class DancingRuby
@@ -38,17 +38,18 @@ Shoes.app :width => 1200 , :height => 800 , :resizable => true do
   class HungryZombie
     attr_accessor :bonk_count
     def initialize(app)
-      @bonk_count = @rotation = @x = 0
+      @bonk_count = @rotation = 0
+      @x = -500
       @y = 50
-      @image = app.image('zombie.png') { bonk }
+      @image = app.image('zombie.png') { bonk! }
       @image.move @x , @y
     end
-    def bonk
+    def bonk!
       @bonk_count += 1
       @x -= 150 
     end
     def draw
-      new_rotation = rand(20)-10
+      new_rotation = rand(30)-10
       @image.rotate new_rotation - @rotation
       @rotation = new_rotation
       @x += ( @rotation > 0 ? @rotation : @rotation/2 ) + 10
@@ -102,12 +103,13 @@ Shoes.app :width => 1200 , :height => 800 , :resizable => true do
   
   
   def game_over
-    alert "ZOMBIE HAS RUBY!\n\nGame over, your bonk count was #{@zombie.bonk_count}."
+    alert "ZOMBIE HAS RUBY!\n\nGame over, your BONK! count was #{@zombie.bonk_count}."
     close
   end
   
   # the background
   # background( image "haunted_forest.jpg" , :width => '100%' , :height => '100%' )
+  background "haunted_forest.jpg"
 
   # the title
   font 'Deanna.ttf'
