@@ -1,16 +1,4 @@
-# TODO
-# * display background
-# * have club bounce back up after I let go of mouse
-
-require 'logger'
-def log(str) 
-  $logger ||= Logger.new("meta.log")
-  $logger.info str.to_s
-end
-
-
-
-Shoes.app :width => 1200 , :height => 800 , :resizable => false do
+Shoes.app :width => 1180 , :height => 800 , :resizable => false do
   
   
   class DancingRuby
@@ -36,14 +24,14 @@ Shoes.app :width => 1200 , :height => 800 , :resizable => false do
   
   
   class HungryZombie
-    attr_accessor :bonk_count
     def initialize(app)
-      @bonk_count = @rotation = 0
+      @app = app
+      @rotation = 0
       @image = app.image('zombie.png') { bonk! }
       @image.move -500 , 75
     end
     def bonk!
-      @bonk_count += 1
+      @app.increment_bonk_count
       @image.left -= 150 
     end
     def draw
@@ -63,12 +51,17 @@ Shoes.app :width => 1200 , :height => 800 , :resizable => false do
       @up = true                    # track whether stick is up or down
       @x = @y = -50
       @image = app.image 'club.png'
-      app.click { bonk! }           # register for when the mouse is clicked
+      app.click   { bonk!   }       # register for when the mouse is clicked
+      app.release { unbonk! }       # register for when the mouse is clicked
       app.motion &method(:move)     # register for whent he mouse is moved
       move                          # initially place the bonk stick offscreen
     end
     def bonk!
-      if up? then down! else up! end
+      down!
+      move
+    end
+    def unbonk!
+      up!
       move
     end
     def move(x=@x,y=@y)
@@ -92,23 +85,38 @@ Shoes.app :width => 1200 , :height => 800 , :resizable => false do
     end
   end
   
-  
-  def game_over
-    alert "ZOMBIE HAS RUBY!\n\nGame over, your BONK! count was #{@zombie.bonk_count}."
-    close
+  class BonkDisplay
+    attr_reader :count
+    def initialize(app)
+      @app = app
+      @paragraph = @app.para "BONK! COUNT: 0" , :stroke => app.red , :size => 20
+      @paragraph.move 900 , 725
+      @count = 0
+    end
+    def increment
+      @count += 1
+      @paragraph.replace "BONK! COUNT: #{@count}"
+    end
   end
   
-  # the background
-  # background( image "haunted_forest.jpg" , :width => '100%' , :height => '100%' )
-  background "haunted_forest.jpg"
-  # background "#F3F".."#F90"
   
+  # the background
+  background "haunted_forest.jpg"
   
   # the title
   font 'Deanna.ttf'
   title 'NIGHT OF THE LIVING RUBY!' , :align => 'center' , :font => 'Deanna' , :height => 100 , :size => 75 , :stroke => red
-
-
+  
+  # app methods
+  @bonker = BonkDisplay.new self
+  def increment_bonk_count
+    @bonker.increment
+  end
+  def game_over
+    alert "ZOMBIE HAS RUBY!\n\nGame over, your BONK! count was #{@bonker.count}."
+    close
+  end
+  
   # the zombie
   @zombie = HungryZombie.new self
   animate 10 do 
