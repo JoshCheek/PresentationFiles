@@ -1,12 +1,11 @@
-Description
-===========
-
 **Night of the Living Ruby** THE VIDEO GAME!
+============================================
 
 Zombies have no braaains, and have thus mistaken our rubyglobin for their hemoglobin. 
 
 Your task, should you choose to accept it, is to protect the beloved Ruby for as long as you can by BONK!ing the zombie back with your BONK! stick. Rack up a killer BONK! count and snark at your friends.
 
+[Watch a short video!](http://vimeo.com/16265101)
 
 ![Night of the Living Ruby screen shot](http://github.com/JoshCheek/PresentationFiles/raw/master/NightOfTheLivingRuby!/game/screenshot.png)
                                         
