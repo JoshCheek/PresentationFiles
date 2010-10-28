@@ -9,11 +9,7 @@ Shoes.app :width => 1180 , :height => 800 , :resizable => false do
       @i = 0
     end
     def get_rotation(rotation)
-      if rotation % 4 < 2
-        15 
-      else
-        -15
-      end
+      if rotation % 4 < 2 then 15 else -15 end
     end
     def draw
       @image.rotate( get_rotation @i )
@@ -52,7 +48,7 @@ Shoes.app :width => 1180 , :height => 800 , :resizable => false do
       @x = @y = -50
       @image = app.image 'club.png'
       app.click   { bonk!   }       # register for when the mouse is clicked
-      app.release { unbonk! }       # register for when the mouse is clicked
+      app.release { unbonk! }       # register for when the mouse is released
       app.motion &method(:move)     # register for whent he mouse is moved
       move                          # initially place the bonk stick offscreen
     end
