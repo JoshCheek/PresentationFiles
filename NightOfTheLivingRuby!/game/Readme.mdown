@@ -1,4 +1,4 @@
-**Night of the Living Ruby** THE VIDEO GAME!
+**Night of the Living Ruby** -- THE VIDEO GAME!
 ============================================
 
 Zombies have no braaains, and have thus mistaken our rubyglobin for their hemoglobin. 
