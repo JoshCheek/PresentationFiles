@@ -14,7 +14,7 @@ Your task, should you choose to accept it, is to protect the beloved Ruby for as
 Usage
 =====
 
-Get a copy of shoes and run app.rb with it.
+Get a copy of shoes and run game.shy with it (or app.rb, but game.shy is a single archive)
 
 Dependencies
 ============
