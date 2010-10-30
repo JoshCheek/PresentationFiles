@@ -11,15 +11,16 @@ Talks about what makes Ruby unique, interesting, fun. Shows lots of examples of 
 
 Photo Credits
 =============
-best friend -> http://www.ruby-lang.org/en/
-hands -> http://lady-dementia-stock.deviantart.com/
-coloured pencils -> mcandea, http://morguefile.com/archive/display/672154
-gasmask girl -> lugubrum-stock, http://browse.deviantart.com/resources/stockart/model/women/?q=gas%20mask#/d10lpzw
-happy lazy eyed kid -> Almost certian it came from http://morguefile.com/ but I can't remember what I typed in, to query for it
-gnome -> jeltovski, http://morguefile.com/archive/display/164215
-rails -> superchappie, http://morguefile.com/archive/display/231085
-red pill -> http://en.wikipedia.org/wiki/File:RedpillMatrix.png
-ruby happy -> pietervleu , http://morguefile.com/archive/display/60947
+
+    best friend                                 http://www.ruby-lang.org/en/
+    gasmask girl          lugubrum-stock        http://lugubrum-stock.deviantart.com/art/Lugubrum-stock-Mask-5-61479644
+    happy lazy eyed kid   Almost certian it came from http://morguefile.com/ but I can't remember what I typed in, to query for it
+    gnome                 jeltovski             http://morguefile.com/archive/display/164215
+    coloured pencils      mcandea               http://morguefile.com/archive/display/672154
+    hands                 lady-dementia-stock   http://lady-dementia-stock.deviantart.com/art/Witch-52378661
+    red pill                                    http://en.wikipedia.org/wiki/File:RedpillMatrix.png
+    rails                 superchappie          http://morguefile.com/archive/display/231085
+    ruby happy            pietervleu            http://morguefile.com/archive/display/60947
 
 ---------------------------------------
 
