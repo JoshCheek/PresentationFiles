@@ -1,3 +1,4 @@
+str = ""
 Shoes.app :height => 500, :width => 450 do
   
   background rgb(77, 77, 77)
