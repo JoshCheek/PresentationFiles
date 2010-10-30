@@ -2,4 +2,6 @@
 *.psd
 *.db
 *.odp
-*.odp#
+*.odp
+images/
+*.pdf

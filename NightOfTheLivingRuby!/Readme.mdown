@@ -1,8 +1,25 @@
 Description
 ===========
 
-Files for my **Night of the Living Ruby** presentation I am giving at WSU, 30 Oct 2010.
+Halloween 2010 presentation about the Ruby programming language I gave at Wichita State University for our chapter of the ACM. These are the files I went through for the project.
 
+Talks about what makes Ruby unique, interesting, fun. Shows lots of examples of how you can do powerful things with Ruby, including hooking Twitter into Growl, creating a tiny database backed web app with Sinatra, creating a GUI app with Shoes, and a small Rails app that we put on Heroku (this got cut out of the video).
+
+* [slides](http://www.scribd.com/doc/40473667/Slides-for-Night-Of-The-Living-Ruby)
+* [video](http://vimeo.com/channels/nightofthelivingruby)
+
+
+Photo Credits
+=============
+best friend -> http://www.ruby-lang.org/en/
+hands -> http://lady-dementia-stock.deviantart.com/
+coloured pencils -> mcandea, http://morguefile.com/archive/display/672154
+gasmask girl -> lugubrum-stock, http://browse.deviantart.com/resources/stockart/model/women/?q=gas%20mask#/d10lpzw
+happy lazy eyed kid -> Almost certian it came from http://morguefile.com/ but I can't remember what I typed in, to query for it
+gnome -> jeltovski, http://morguefile.com/archive/display/164215
+rails -> superchappie, http://morguefile.com/archive/display/231085
+red pill -> http://en.wikipedia.org/wiki/File:RedpillMatrix.png
+ruby happy -> pietervleu , http://morguefile.com/archive/display/60947
 
 ---------------------------------------
 
