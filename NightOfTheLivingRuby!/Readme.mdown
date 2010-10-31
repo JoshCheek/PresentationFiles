@@ -8,6 +8,12 @@ Talks about what makes Ruby unique, interesting, fun. Shows lots of examples of 
 * [slides](http://www.scribd.com/doc/40473667/Slides-for-Night-Of-The-Living-Ruby)
 * [video](http://vimeo.com/channels/nightofthelivingruby)
 
+Unfortunately, camera ran out of juice before the end. We basically finished the Rails app, put it on Heroku, and used it to select a winner for the 4GB flash drive.
+
+Then there was Q & A, which mostly focused on testing, and we went through a BDD example using RSpec, as well as showing off the irb.
+
+**Big thanks to Audrey for letting us use her camera!**
+
 
 Photo Credits
 =============
