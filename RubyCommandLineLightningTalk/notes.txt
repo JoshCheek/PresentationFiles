@@ -1,0 +1,65 @@
+Command line flags
+  -e  Takes a script as the next argument
+    ruby -e "puts 'hello world'"
+
+  -n  Assumes a loop around your script with each line placed in $_
+    echo -e "a\nb\nc" | ruby -n 'puts "hello world"'
+
+  -p  Acts like -n, but prints $_ afterwards
+    echo -e "a\nb\nc" | ruby -ne 'puts "hello world"'
+
+  -l  Enables automatic line-ending processing
+    echo -e "a\nb\nc" | ruby -ne 'p $_'   # has newlines
+    echo -e "a\nb\nc" | ruby -nle 'p $_'  # no newlines
+
+  -a  Turns on auto-split mode when used with -n or -p.
+    ruby -ane 'p $F' <<<"a b c"
+
+  -F  Specifies input field separator ($;)
+    echo a:b:c | ruby -F: -alne 'p $F'
+
+  -i  Specifies in-place-edit mode.
+    # no example
+
+
+Variables
+  $_  The current line
+    echo -e "a\nb\nc" | ruby -lne 'print $_.upcase'
+
+  $.  The current line number
+    echo -e "a\nb\nc" | ruby -ne 'print $., $_'
+
+  $F  When using the -a flag, holds the fields
+    echo a:b:c | ruby -F: -alne 'p $F'
+
+
+
+Other useful things
+  regexes are conditionals against $_
+    echo -e "ab\nbc\nae\nbe" | ruby -ne 'print if /^a/'
+
+  `print` When given no args, prints $_
+    echo -e "a\nb\nc" | ruby -lne '3.times { print }; puts'
+
+  BEGIN/END   Execute before and after the lines are processed (initialize vars here)
+    echo -e "a\nb\nc" | ruby -lne 'BEGIN { lines = [] }; lines.unshift $_; END { p lines }'
+
+  Interpolation doesn't need squigglies if var begins with sigil
+    $_ = "abc"
+    puts "#$_ #$_ #$_"
+
+  -n and -p take input from ARGF (standard input or files specified in ARGV)
+    echo abc | ruby -ne print     # standard input
+
+    echo def > inputfile
+    ruby -ne print inputfile
+
+  Extra methods that operate on $_
+    echo a | ruby -ne 'p private_methods' | ruby -e 'p eval($stdin.read) - private_methods'
+    [:sub, :gsub, :chop, :chomp]
+
+    echo "abbc" | ruby -pe 'sub "b", "B"'
+    aBbc
+
+    echo "abbc" | ruby -pe 'gsub "b", "B"'
+    aBBc
