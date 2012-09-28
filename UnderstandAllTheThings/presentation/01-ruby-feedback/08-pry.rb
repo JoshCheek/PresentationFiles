@@ -1,3 +1,5 @@
+Post = Struct.new :title
+
 class User
   attr_accessor :email, :posts
   def initialize(email, posts)
@@ -9,14 +11,8 @@ class User
   end
 end
 
-class Post
-  attr_accessor :title
-  def initialize(title)
-    self.title = title
-  end
-end
-
 user = User.new 'josh@example.com', [Post.new('Hello'), Post.new('World')]
 
+# show-source, ls, cd
 require 'pry'
 binding.pry

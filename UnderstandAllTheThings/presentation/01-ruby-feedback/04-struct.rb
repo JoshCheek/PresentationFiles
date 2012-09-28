@@ -6,4 +6,7 @@ class User
   end
 end
 
+user = User.new 'josh@example.com', 'secret'
+user.email    # => "josh@example.com"
+user.password # => "secret"
 # remove boiler plate with a struct

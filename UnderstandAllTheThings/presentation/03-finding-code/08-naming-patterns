@@ -1,0 +1,8 @@
+constants to gem names
+  RSpec        -> rspec
+  RSpec::mocks -> rspec-mocks
+
+constants to file paths
+  RSpec::Mocks -> rspec/mocks
+
+

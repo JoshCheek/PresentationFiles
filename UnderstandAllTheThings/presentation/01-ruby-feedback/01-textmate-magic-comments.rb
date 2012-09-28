@@ -3,5 +3,5 @@ def factorial(n)
   n * factorial(n-1)
 end
 
-factorial 5 # => 120
+factorial 5 # => 
 

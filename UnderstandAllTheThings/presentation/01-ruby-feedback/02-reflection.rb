@@ -1,5 +1,5 @@
 # local_variables
-# a, = 1
+# a = 1
 
 # instance_variables
 # class Foo
