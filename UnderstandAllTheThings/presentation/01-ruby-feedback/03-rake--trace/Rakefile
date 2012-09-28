@@ -1,0 +1,7 @@
+def add_two(n)
+  puts n + 2
+end
+
+task :default do
+  add_two '2'
+end

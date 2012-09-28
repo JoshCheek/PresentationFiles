@@ -1,0 +1,1 @@
+gem 'surrogate', git: 'git://github.com/JoshCheek/surrogate.git'

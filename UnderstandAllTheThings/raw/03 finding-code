@@ -1,0 +1,34 @@
+finding code online
+  gem/gems browser shortcuts
+  github
+  localize it: clone it and throw it somewhere so you can navigate it with power
+  gem search -r regex
+  plugin pattern names
+  mapping class name to filename
+    MyGem -> my_gem
+    extensions take the form base_gem_name-extension_name
+  ruby-toolbox
+  bundle open gemname
+  gem open gemname
+  docs
+    http://rdoc.info/
+      core
+      all the gems
+  firefox search engines for gem and gems
+  
+finding the code locally
+  keep a cloned version locally of ruby and rails
+  gem which filename
+  2dir
+  2gem
+
+in project
+  ctags
+    `brew install ctags`
+    cd to/source/code
+    tagme
+
+github
+  making a gist
+  naming patterns
+

@@ -1,0 +1,8 @@
+constants to gem names
+  MountainBerryFields -> mountain_berry_fields
+  MountainBerryFields::MagicComments -> mountain_berry_fields-magic_comments
+
+constants to file paths
+  RSpec::Core -> rspec/core
+
+

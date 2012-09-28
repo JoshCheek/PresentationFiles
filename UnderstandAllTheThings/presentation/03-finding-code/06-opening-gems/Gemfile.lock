@@ -1,0 +1,14 @@
+GIT
+  remote: git://github.com/JoshCheek/surrogate.git
+  revision: 1534b85c6064d41378aed5a07e3e0c9b6687e7fa
+  specs:
+    surrogate (0.6.0)
+
+GEM
+  specs:
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  surrogate!

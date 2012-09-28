@@ -1,0 +1,9 @@
+tagging
+~/.rspec
+options
+  -c
+  -f d
+  --fail-fast
+rspec docs are best at relishapp
+speed up load time by removing bundler (gemsets)
+comment out a section of code, see what fails in order to figure out what some code did

@@ -1,0 +1,7 @@
+find file
+  which binary_name
+  gem which gem_name
+
+2dir / 2gem
+
+https://github.com/JoshCheek/dotfiles/blob/2e09e238a6ae2bc05df20613c2b3f2b157783d0c/dotfiles/profile#L122-141

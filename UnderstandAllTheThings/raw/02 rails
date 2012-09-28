@@ -1,0 +1,3 @@
+visualizer for database (graphviz output)
+`rake routes` ... how about if instead, you say "screw the dsl" and you write those routes in there so you can find it easily, understand it easily, and edit easily
+textmate in_memory_arb

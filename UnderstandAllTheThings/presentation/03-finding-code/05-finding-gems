@@ -1,0 +1,5 @@
+ruby-toolbox.com
+
+$ gem list pattern
+$ gem search -r pattern
+

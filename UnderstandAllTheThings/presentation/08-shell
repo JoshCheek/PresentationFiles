@@ -1,0 +1,73 @@
+key bindings
+  C-a # beginning of the line
+  C-e # end of the line
+  C-u # kill to the beginning of the line
+  C-k # kill to the end of the line
+  C-y # yank from the kill ring
+  M-y # cycle through the kill ring
+
+interrupting a command
+  kill the line (C-u)
+  do what you need to do
+  yank the line (C-y)
+
+history
+  $ history
+  C-r # then start typing. Does a recursive search through history
+
+ack
+  https://github.com/JoshCheek/dotfiles/blob/deba9fc2826a7b4d6c8bd19b89f14bd93abe74aa/dotfiles/ackrc
+  $ ack pattern
+  $ ack ls --ignore-dir=dirname
+
+tree
+  directory listings in visual format
+  $ brew install tree
+
+cheat
+  $ cheat bash
+  $ cheat ln
+
+inspecting colon separated variables
+  $ tr : "\n" <<<"$PATH"
+  $ :2n "$PATH"  # https://github.com/JoshCheek/dotfiles/blob/2e09e238a6ae2bc05df20613c2b3f2b157783d0c/dotfiles/profile#L69-76
+
+pbcopy
+  sends text to pasteboard
+  $ ls | pbcopy
+
+na
+  strip ansi escape sequences
+  https://github.com/JoshCheek/dotfiles/blob/2e09e238a6ae2bc05df20613c2b3f2b157783d0c/dotfiles/profile#L119-120
+
+fancy ls
+  https://github.com/JoshCheek/dotfiles/blob/2e09e238a6ae2bc05df20613c2b3f2b157783d0c/dotfiles/profile#L12-19
+  alias l="ls -lFGgohq"
+
+ls after every cd
+  rvm: place it after this line https://github.com/wayneeseguin/rvm/blob/7031ae7c72d3f728f2ee1d0e8a0b17951a70436c/scripts/cd#L22
+  no rvm:
+    $ cd() {
+        builtin cd "$@"
+        l
+        ls -lFGgohq
+      }
+
+fancy prompt
+  https://github.com/JoshCheek/dotfiles/blob/2e09e238a6ae2bc05df20613c2b3f2b157783d0c/dotfiles/profile#L144-155
+
+  function parse_git_branch {
+    git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ \1 /'
+  }
+
+  export PS1="\[\033[37;45m\] \@ \[\033[0m\] \[\033[37;45m\] \w \[\033[0m\] \[\033[32;45m\]\$(parse_git_branch)\[\033[0m\]\n\$ \[\033[0m\]"
+
+fancy colours
+  http://en.wikipedia.org/wiki/ANSI_escape_sequences#Colors
+  C-v Escape # C-v to escape the next character, Escape to introduce an ansi escape
+  uby -e '(0..7).each { |n1| (0..7).each { |n2| puts "\e[3#{n1};4#{n2}m3#{n1};4#{n2} - hello, world\e[0m" } }'
+
+other useful things
+  $ cd - # cd to last directory
+  $ !$   # last argument of previous command
+  alias common tasks (e.g. command to run your test suite)

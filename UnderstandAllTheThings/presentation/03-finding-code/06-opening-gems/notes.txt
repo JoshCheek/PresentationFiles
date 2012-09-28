@@ -1,0 +1,4 @@
+$ bundle open surrogate # the one used by code when run with bundle exec
+
+$ gem open surrogate    # the one installed elsewhere on my system
+$ gem install gem-open  # in order to do `gem open surrogate`

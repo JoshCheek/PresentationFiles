@@ -1,0 +1,5 @@
+* nearly always a link from gem page (this is the one you want)
+*   github.com/username/project
+  * github.com/username/project/tree/commit(e.g. master)/path/to/file
+  * github.com/username/project/tree/commit(e.g. master)/path/to/file#L123
+

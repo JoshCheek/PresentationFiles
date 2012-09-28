@@ -1,0 +1,3 @@
+$ rspec some_spec.rb                # everything
+$ rspec some_spec.rb --tag ~@slow   # not the slow ones
+$ rspec some_spec.rb --tag @slow    # only the slow ones

@@ -1,0 +1,53 @@
+textmate
+  quick and dirty rspec
+  # =>
+    Turning these into acceptance tests
+  xmpfilter examples
+
+local copies of code (e.g. ruby and rails in deleteme dir)
+rake --trace
+comment out a section of code, see what fails in order to figure out what some code did
+parsing data (e.g. pp JSON.parse DATA.read)
+pbcopy the gem
+
+structs
+defining fake objects on the fly (Object.new.def whatever)
+  (making logger objects that just log that they were called
+useful info in a gemspec
+  load paths
+set_trace_func for really hard to find bugs
+caller
+reading stack traces
+reflection
+  caller
+  local_variables
+  instance_variables
+  included_modules
+  instance_methods
+  methods
+  instance_variables
+  method(:whatever).owner
+  instance_variable_get
+  constants
+  
+case statements where you hit every possibility, include a default that raises
+raise to get a stack trace / get more information
+put the context in your error messages
+figuring out how to use a library
+  skim the readme
+  skim the tests
+  start at the top, work your way down
+
+pry
+  require 'pry'; binding.pry (Alias this)
+  in rails, throw it at the end of a script and then `rails runner yoursript.rb`
+  stack explorer
+  watch out for fucking method missing
+  pry-remote
+  commands:
+    help
+    command -h
+    ls -v, -i, -l, -m, -M
+    show-method
+    cd
+

@@ -1,0 +1,12 @@
+terminal
+
+Turn option to +ESC in preferences -> profiles -> keys
+colour schemes available online
+
+cheat sheets: $ cheat iterm
+
+commands:
+  split horizontally: Command d
+  split vertically:   Command D
+  close pane:         Command w
+  jump pantes:        Command Option Arrow

@@ -1,0 +1,6 @@
+rdoc.info
+  stdlib -> core                # for core ruby stuff
+  stdlib -> any repo            # for stuff from stdlib
+  gems   -> initial -> gename   # for docs on a gem
+
+ruby-doc.org as an alternative when rdoc.info doesn't work right

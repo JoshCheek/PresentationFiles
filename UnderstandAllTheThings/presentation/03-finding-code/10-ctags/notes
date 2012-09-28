@@ -1,0 +1,8 @@
+$ brew install ctags
+
+Add tags:
+  https://github.com/JoshCheek/dotfiles/blob/163e0e1f62448928e0c798ae046138449c044509/utils/tagme
+
+in vim:
+  :!tagme
+  cursor over constant, C-]

@@ -1,0 +1,22 @@
+tree
+cheat ln
+tr : "\n" <<<"$PATH"
+kill line, do something, yank line (C-u, change, C-y)
+bash !$
+pbcopy
+cd -
+aliasing common shit (alias r="be rspec spec/whatever"... use the alias with extra flags)
+C-r for recursive searching
+history | grep to find that command
+na
+pbcopy
+ack
+  link to my .ackrc
+  run without filters
+gem which ... # Gem.find_files('pry-*')
+which ...
+where
+ls after every cd
+C-u, C-k, C-y, M-y
+
+ansi escape sequences to get colour
