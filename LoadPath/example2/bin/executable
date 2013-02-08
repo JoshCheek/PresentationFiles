@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+require 'pp'
+
+$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
+puts "THE LOAD PATH: "
+pp $LOAD_PATH
+
+require 'my_gem'
+puts "USERS: #{USERS.inspect}"
