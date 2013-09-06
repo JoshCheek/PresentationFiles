@@ -1,0 +1,77 @@
+The Ruby Object Model
+
+Definition
+  The object model is the structure underlying Ruby that
+  the language operates on in order to make anything happen.
+
+Why learn it?
+  Everyone who does Ruby should know the object model.
+  If you don't know the object model, then you don't know Ruby.
+  You might be able to get something done without knowing it,
+  the way you could drive a car without understanding engines.
+  But if you don't understand the engine, you don't know how to
+  fix it when it breaks, when and why to switch to different gears.
+  In Ruby, you won't be able to understand much of the code you rely on,
+  or why your code works in some situations or how to find new elegant solutions.
+
+The Model:
+  In order to accomplish something in code, you need two things.
+  1. a way of manipulating data (e.g. incrementing someone's age on their birthday)
+  2. data to manipulate (e.g. their age, stored as an integer)
+
+  This mirrors the object model.
+  1. Classes are containers for methods, sequences of instructions to manipulate data
+  2. Instances (aka objects) are containers for instance variables, references to data unique to this particular instance.
+
+Question:
+  Could instances store their own methods?
+  If no, why not?
+  If yes, why don't they?
+
+Question:
+  Could classes store data?
+  If no, why not?
+  If yes, why don't they?
+
+Example:
+  show classes have instance methods,
+  show instance's methods know they belong to the class
+  show instances know their instance variables
+  show the variables point to the data
+
+Question:
+  If methods are stored on classes, how come I can call them on instances?
+
+Lets see how they are implemented:
+  https://github.com/ruby/ruby/blob/9e3d9a2a009d2a0281802a84e1c5cc1c887edc71/ruby.h#L218-233
+
+DISCREPANCIE! OH NO!
+  I can call `User.new.to_s`, but there is no `to_s` method...
+  How does that work?
+
+The Model:
+  When we call a method on an instance, it looks up its class, and asks the class for the method.
+  If the class doesn't have it, it looks to its superclass, and we follow the chain of superclasses up
+  until we find it.
+
+Question:
+  If methods are on classes, how do they know which instance variables they are talking about?
+
+Example:
+  Show binding a method
+
+So the method lookup goes like this:
+  instance -> class -> superclass -> superclass -> superclass -> ...
+
+Question:
+  What if the method doesn't exist?
+  If you were implementing this, what would you do?
+
+DISCREPANCIE! OH NO!
+  We can define methods on specific instances!
+  How could we make this work within the model?
+
+DISCREPANCIE! OH NO!
+  Classes can have instance variables, and we can call methods on them!
+  How come?
+  What does this mean?
