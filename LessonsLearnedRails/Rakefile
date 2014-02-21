@@ -1,0 +1,24 @@
+require 'tilt'
+
+class Context
+  def link_to(text, href)
+    "<a href='#{href}'>#{text}</a>"
+  end
+end
+
+def tilt(file, &block)
+  Tilt::HamlTemplate.new(file).render(Context.new, &block)
+end
+
+desc "tilt it"
+task :render do
+  r = tilt 'layout.haml' do
+    tilt 'slides.haml'
+  end
+
+  File.open 'index.html', 'w' do |f|
+    f.write r
+  end
+end
+
+task :default => :render

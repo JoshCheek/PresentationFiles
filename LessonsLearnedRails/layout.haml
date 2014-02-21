@@ -1,0 +1,51 @@
+!!!
+%html{:lang => "en"}
+  %head
+    %meta{:charset => "utf-8"}/
+    %title FinanceXL
+    %meta{:content => "", :name => "description"}/
+    %meta{:content => "", :name => "author"}/
+    %meta{:content => "yes", :name => "apple-mobile-web-app-capable"}/
+    %meta{:content => "black-translucent", :name => "apple-mobile-web-app-status-bar-style"}/
+    %meta{:content => "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no", :name => "viewport"}/
+    %link{:href => "css/reveal.min.css", :rel => "stylesheet"}/
+    %link{:href => "css/tweak.css", :rel => "stylesheet"}/
+    %link#theme{:href => "css/theme/solarized.css", :rel => "stylesheet"}/
+    / For syntax highlighting
+    %link{:href => "lib/css/zenburn.css", :rel => "stylesheet"}/
+    / If the query includes 'print-pdf', use the PDF print sheet
+    :javascript
+      document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+    /[if lt IE 9]
+      <script src="lib/js/html5shiv.js"></script>
+
+  %body
+    .reveal
+      .slides= yield
+
+    %script{:src => "lib/js/head.min.js"}
+    %script{:src => "js/reveal.min.js"}
+    :javascript
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        overview: true,
+        controls: true,
+        progress: true,
+        history: true,
+        center: false,
+        rollingLinks: false,
+        transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+          { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'plugin/highlight/highlight.js', callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+          { src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+          // { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+          // { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+        ]
+      });

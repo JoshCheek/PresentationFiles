@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang='en'>
+  <head>
+    <meta charset='utf-8'>
+    <title>FinanceXL</title>
+    <meta content='' name='description'>
+    <meta content='' name='author'>
+    <meta content='yes' name='apple-mobile-web-app-capable'>
+    <meta content='black-translucent' name='apple-mobile-web-app-status-bar-style'>
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' name='viewport'>
+    <link href='css/reveal.min.css' rel='stylesheet'>
+    <link href='css/tweak.css' rel='stylesheet'>
+    <link href='css/theme/solarized.css' id='theme' rel='stylesheet'>
+    <!-- For syntax highlighting -->
+    <link href='lib/css/zenburn.css' rel='stylesheet'>
+    <!-- If the query includes 'print-pdf', use the PDF print sheet -->
+    <script>
+      document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+    </script>
+    <!--[if lt IE 9]>
+      <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class='reveal'>
+      <div class='slides'>
+        <section class='intro'>
+          <section>
+            <h1>Real World Rails</h1>
+            <br>
+            <h3>Lessons Learned</h3>
+            <h3>for Loving Your Codebase 2.5 Years Later</h3>
+            <br>
+            <h2>Josh Cheek</h2>
+          </section>
+          <section>
+            <h2>Introduction</h2>
+            <ul>
+              <li>2.5 years on client project</li>
+              <li>greenfield(ish)</li>
+              <li>5 brands now building in it</li>
+              <li>some code is good, some is bad</li>
+              <li>much of the bad has become good</li>
+              <li>time gives perspective</li>
+              <li>I read more than write</li>
+              <li>new users need to be able to understand</li>
+              <li>here is what I've learned</li>
+              <li>many ideas are functional</li>
+              <li>this talk works best as a conversation, so participate!</li>
+            </ul>
+          </section>
+          <section>
+            <h2>Categories</h2>
+            <ul>
+              <li>Write maintainable code</li>
+              <li>Minimize dependencies</li>
+              <li>Be explicit</li>
+            </ul>
+          </section>
+        </section>
+        <section class='maintainable_code'>
+          <section>
+            <h1>Maintainable Code</h1>
+          </section>
+          <section>
+            <h2>Test your code</h2>
+            <br>
+            <h3>we all know this</h3>
+          </section>
+          <section>
+            <h2>You shouldn't be able to use an object incorrectly</h2>
+            <pre class='fragment'><code class='ruby'>User = Struct.new :first_name, :last_name do&#x000A;  def full_name&#x000A;    @full_name ||= "#{first_name} #{last_name}"&#x000A;  end&#x000A;end&#x000A;&#x000A;user = User.new 'Paul', 'Pagel'&#x000A;user.full_name&#x000A;# => "Paul Pagel"&#x000A;&#x000A;user.first_name = 'Margaret'&#x000A;user.full_name&#x000A;# => "Paul Pagel"</code></pre>
+            <h3 class='fragment'>In this case: mutable state breaks caching</h3>
+          </section>
+          <section>
+            <h2>Don't hard-code assumptions</h2>
+            <br>
+            <h3>Don't assume a current "always"</h3>
+            <h3>Leave room for new use cases</h3>
+            <pre class='fragment'><code class='ruby'>class Loan < ActiveRecord::Base&#x000A;  before_create :notify_user_they_got_the_loan&#x000A;end&#x000A;</code></pre>
+            <p class='fragment'>
+              Do I really
+              <strong>ALWAYS</strong>
+              want to do this? Even if there are regulations, don't assume "yes".
+            </p>
+          </section>
+          <section>
+            <h2>Build yourself tools</h2>
+            <br>
+            <h3>Take the time to make your environment better</h3>
+            <img src='img/ttt1.png'>
+            <img src='img/ttt2.png'>
+          </section>
+          <section>
+            <h2>Avoid modules (inheritance)</h2>
+            <br>
+            <h3>Choose composition instead</h3>
+            <pre class='fragment'><code class='ruby'>class SomethingController < ApplicationController&#x000A;  def create&#x000A;    Rails.version                  # => "4.0.0"&#x000A;    singleton_class.ancestors.size # => 63&#x000A;    methods.size                   # => 336&#x000A;  end&#x000A;end&#x000A;</code></pre>
+          </section>
+          <section>
+            <h2>Don't invent requirements</h2>
+            <br>
+            <p>
+              None of
+              <a href='https://github.com/JoshCheek/surrogate/blob/e83ca978a72caa4f088903b5470ba37b05a87691/lib/surrogate/endower.rb#L58-76'>this</a>
+              nonsense is necessary
+            </p>
+          </section>
+        </section>
+        <section class='minimize_dependencies'>
+          <section>
+            <h1>Minimize Dependencies</h1>
+          </section>
+          <section>
+            <h2>All dependencies point downwards</h2>
+            <br>
+            <pre><code class='ruby'>calculator = Calculator.new(self, @apr)</code></pre>
+            <br>
+            <p>
+              If our class is immutable, this isn't such a big deal,
+              we can think of it as dependency inversion.
+              But we can't see how we change based on what this class does to us.
+            </p>
+          </section>
+          <section>
+            <h2>don't put behavioural methods onto models</h2>
+            <h3>Really, just the ISP</h3>
+            <div class='fragment'>
+              <pre><code class='ruby'>def create&#x000A;  current_loan.add_payment params[:payment]&#x000A;end&#x000A;</code></pre>
+              <p>becomes</p>
+              <pre><code class='ruby'>def create&#x000A;  AddPayment.new(current_loan, params[:payment]).call&#x000A;end&#x000A;</code></pre>
+              <p>or, if possible</p>
+              <pre><code class='ruby'>def create&#x000A;  AddPayment.new(current_loan, params[:payment]).call.save&#x000A;end&#x000A;</code></pre>
+            </div>
+          </section>
+          <section>
+            <h2>Don't mutate inputs</h2>
+            <br>
+            <h3>Especially to the outside world and to inputs.</h3>
+            <h3>Work with values.</h3>
+            <br>
+            <div>
+              <pre><code class='ruby'>def accrue_interest(loan, start_date, end_date)&#x000A;  loan.accrued_interest = (loan.daily_interest_rate * loan.principal) *&#x000A;                          (start_date - end_date)&#x000A;end&#x000A;</code></pre>
+              <p>becomes</p>
+              <pre><code class='ruby'>def interest_accrued_over(loan, start_date, end_date)&#x000A;  (loan.daily_interest_rate * loan.principal) *&#x000A;  (start_date - end_date)&#x000A;end&#x000A;loan.accrued_interest = interest_accrued_over loan,&#x000A;                                              start_date,&#x000A;                                              end_date&#x000A;</code></pre>
+            </div>
+          </section>
+          <section>
+            <h2>Tend towards primitives</h2>
+            <pre><code class='ruby'>def interest_accrued_over(loan, start_date, end_date)&#x000A;  (loan.daily_interest_rate * loan.principal) *&#x000A;  (start_date - end_date)&#x000A;end&#x000A;loan.accrued_interest = interest_accrued_over loan,&#x000A;                                              start_date,&#x000A;                                              end_date&#x000A;</code></pre>
+            <p>becomes</p>
+            <pre><code class='ruby'>def interest_accrued_over(daily_interest_rate, principal,&#x000A;                            start_date, end_date)&#x000A;  (daily_interest_rate * principal) *&#x000A;  (start_date - end_date)&#x000A;end&#x000A;loan.accrued_interest = interest_accrued_over loan.daily_interest_rate,&#x000A;                                              loan.principal,&#x000A;                                              start_date,&#x000A;                                              end_date</code></pre>
+            <pre><code class='ruby'>interest_accrued_over D('1.23'), D('500'), start_date, end_date&#x000A;</code></pre>
+          </section>
+          <section>
+            <h2>Remove timing dependencies</h2>
+            <h3>Separate an object with a timing dependency into a function and data structure</h3>
+            <pre><code class='ruby'>class Inputs < Struct.new(:payments, :sum)&#x000A;  def initialize(loan)&#x000A;    @loan = loan&#x000A;  end&#x000A;&#x000A;  def calculate&#x000A;    self.payments = @loan.payments.incoming.successful&#x000A;    self.sum      = payments.map(&:amount).sum&#x000A;  end&#x000A;end&#x000A;</code></pre>
+            <p>becomes</p>
+            <pre><code class='ruby'>class Inputs < Struct.new(:payments, :sum)&#x000A;  def self.for(loan)&#x000A;    payments = loan.payments.incoming.successful&#x000A;    sum      = payments.map(&:amount).sum&#x000A;    new(payments, sum)&#x000A;  end&#x000A;end&#x000A;&#x000A;</code></pre>
+          </section>
+          <section>
+            <h2>Remove knowledge dependencies</h2>
+            <br>
+            <h3>This takes many forms</h3>
+            <br>
+            <pre><code class='ruby'>def update_login(user, login)&#x000A;  BackEnd::User.update user.id, login: login, email: login&#x000A;end</code></pre>
+            <br>
+            <h3>Wait, why are we updating email?</h3>
+            <h3>Push that down to the back end</h3>
+          </section>
+        </section>
+        <section class='be_explicit'>
+          <section>
+            <h1>Be Explicit</h1>
+          </section>
+          <section>
+            <h2>Don't hide important details under abstractions</h2>
+            <br>
+            <pre><code class='ruby'>def padded_take ary, n&#x000A;  pad(ary, n).take(n)&#x000A;end&#x000A;</code></pre>
+            <br>
+            <ul>
+              <li class='fragment'>What are we padding with?</li>
+              <li class='fragment'>Are we padding the left or right side?</li>
+              <li class='fragment'>Is the padding done eagerly or lazily?</li>
+            </ul>
+            <br>
+            <br>
+            <pre class='fragment'><code class='ruby'>def pad ary, n&#x000A;  pad_length = [0, n - ary.length].max&#x000A;  ary + [0] * pad_length&#x000A;end&#x000A;&#x000A;</code></pre>
+          </section>
+          <section>
+            <h2>Function Objects</h2>
+            <h3>
+              <a href='https://github.com/JoshCheek/seeing_is_believing/blob/master/lib/seeing_is_believing/binary/comment_formatter.rb'>Example 1</a>,
+              <a href='https://github.com/JoshCheek/seeing_is_believing/blob/master/spec/binary/comment_formatter_spec.rb'>Example 2</a>
+            </h3>
+            <br>
+            <pre><code class='ruby'>class CreateLoanApplication&#x000A;  def initialize(loan, ...)&#x000A;    @loan = loan&#x000A;  end&#x000A;&#x000A;  def call # no inputs&#x000A;    # ...&#x000A;  end&#x000A;&#x000A;  private&#x000A;&#x000A;  # ...&#x000A;end&#x000A;</code></pre>
+          </section>
+          <section>
+            <h2>More on Function Objects :D</h2>
+            <br>
+            <h3>Advantages</h3>
+            <br>
+            <ul>
+              <li>An obvious place to start (when reading)</li>
+              <li>No state (impossible to become a bad object)</li>
+              <li>SRP</li>
+              <li>Explicit arguments</li>
+              <li>Answers `C.new.meth(arg)` or `C.new(arg).meth`</li>
+            </ul>
+          </section>
+          <section>
+            <h2>Explicit Inputs</h2>
+            <ul>
+              <li>Pass in everything you need to do the job, don't rely on the external context</li>
+              <li>Makes debugging much easier</li>
+              <li>Reduces the amount of state that you need to keep in your head</li>
+              <li>Makes refactoring easier</li>
+              <li>Easier to test</li>
+            </ul>
+          </section>
+          <section>
+            <h2>Examples of Explicit Inputs</h2>
+            <br>
+            <pre><code class='ruby'>def do_something(a, b)&#x000A;  @c + ARGV.select { |arg| ... }&#x000A;end&#x000A;</code></pre>
+            <p>becomes</p>
+            <pre><code class='ruby'>def do_something(argv, a, b, c)&#x000A;  c + argv.select { |arg| ... }&#x000A;end&#x000A;</code></pre>
+            <div class='fragment'>
+              <br>
+              <p>another example</p>
+              <pre><code class='ruby'>class SomethingController < ApplicationController&#x000A;  def create&#x000A;    # what can I even do in here?&#x000A;  end&#x000A;end&#x000A;&#x000A;</code></pre>
+            </div>
+          </section>
+          <section>
+            <h2>Kick everything off explicitly</h2>
+            <pre><code class='ruby'>class Loan&#x000A;  before_create :notify_user_they_got_the_loan&#x000A;end&#x000A;</code></pre>
+            <p>becomes</p>
+            <pre><code class='ruby'>class CreateLoan&#x000A;  def call(...)&#x000A;    loan = Loan.new(...)&#x000A;    notify_user_they_got_the_loan if loan.save&#x000A;  end&#x000A;end&#x000A;&#x000A;</code></pre>
+          </section>
+          <section>
+            <h2>Caller is responsible for formatting inputs</h2>
+            <br>
+            <pre><code class='ruby'>def notify_user(user_or_id, message)&#x000A;  user = user_or_id&#x000A;  user = User.find user_or_id unless user.kind_of? User&#x000A;  # ...&#x000A;end&#x000A;</code></pre>
+            <br>becomes</br>
+            <pre><code class='ruby'>def notify_user(user, message)&#x000A;  # ...&#x000A;end&#x000A;</code></pre>
+          </section>
+          <section>
+            <h2>Avoid magic</h2>
+            e.g. routes
+            <pre><code class='ruby'>resources :users&#x000A;</code></pre>
+            <pre class='fragment'><code>$ bundle exec rake routes&#x000A;   Prefix Verb   URI Pattern               Controller#Action&#x000A;    users GET    /users(.:format)          users#index&#x000A;          POST   /users(.:format)          users#create&#x000A; new_user GET    /users/new(.:format)      users#new&#x000A;edit_user GET    /users/:id/edit(.:format) users#edit&#x000A;     user GET    /users/:id(.:format)      users#show&#x000A;          PATCH  /users/:id(.:format)      users#update&#x000A;          PUT    /users/:id(.:format)      users#update&#x000A;          DELETE /users/:id(.:format)      users#destroy&#x000A;</code></pre>
+            <pre class='fragment'><code class='ruby'>get    '/users(.:format)'          => 'users#index',  as: :users&#x000A;post   '/users(.:format)'          => 'users#create'&#x000A;get    '/users/new(.:format)'      => 'users#new',    as: :new_user&#x000A;get    '/users/:id/edit(.:format)' => 'users#edit',   as: :edit_user&#x000A;get    '/users/:id(.:format)'      => 'users#show',   as: :user&#x000A;patch  '/users/:id(.:format)'      => 'users#update'&#x000A;put    '/users/:id(.:format)'      => 'users#update'&#x000A;delete '/users/:id(.:format)'      => 'users#destroy'&#x000A;</code></pre>
+          </section>
+          <section>
+            <h2>Avoid metaprogramming</h2>
+            <br>
+            <ul>
+              <li>Methods you can't see but can call</li>
+              <li>Don't know who self is</li>
+              <li>Can't guess how to use something</li>
+              <li>Can't see consequences</li>
+              <li>saving local variables because method invocations stop working</li>
+            </ul>
+          </section>
+          <section>
+            <h2>Be wary of DSLs</h2>
+            <br>
+            <ul>
+              <li>Don't know who self is</li>
+              <li>Can't see where things come from or go to</li>
+              <li>Can't see what can modify what</li>
+              <li>Often involve singletons</li>
+              <li>Often affect state (e.g. Capybara DSL)</li>
+            </ul>
+          </section>
+        </section>
+        <section class='conclusion'>
+          <section>
+            <h2>Categories</h2>
+            <ul>
+              <li>Write maintainable code</li>
+              <li>Minimize dependencies</li>
+              <li>Be explicit</li>
+            </ul>
+          </section>
+        </section>
+      </div>
+    </div>
+    <script src='lib/js/head.min.js'></script>
+    <script src='js/reveal.min.js'></script>
+    <script>
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        overview: true,
+        controls: true,
+        progress: true,
+        history: true,
+        center: false,
+        rollingLinks: false,
+        transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+      
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+          { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'plugin/markdown/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+          { src: 'plugin/highlight/highlight.js', callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+          { src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+          // { src: 'plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; } }
+          // { src: 'plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+        ]
+      });
+    </script>
+  </body>
+</html>

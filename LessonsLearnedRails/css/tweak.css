@@ -1,0 +1,11 @@
+.reveal p > code {
+  color: #e7ad52;
+}
+
+.slides p {
+  text-align: left;
+}
+
+.slides p.blurb {
+  text-align: center;
+}
