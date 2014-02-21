@@ -1,6 +1,4 @@
-# FinanceXL Slides
-Slides for a presentation I gave on March 14, 2013 about FinanceXL.
-
-These may end up being semi-official documentation, too.
+# Lessons Learned in Ruby and Rails
+Slides for my presentatoin
 
 To view them, just open `index.html`.
