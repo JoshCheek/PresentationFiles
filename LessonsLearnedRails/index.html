@@ -26,7 +26,7 @@
       <div class='slides'>
         <section class='intro'>
           <section>
-            <h1>Real World Rails</h1>
+            <h1>Real World (not) Rails</h1>
             <br>
             <h3>Lessons Learned</h3>
             <h3>for Loving Your Codebase 2.5 Years Later</h3>
@@ -55,6 +55,7 @@
               <li>Write maintainable code</li>
               <li>Minimize dependencies</li>
               <li>Be explicit</li>
+              <li>Extras</li>
             </ul>
           </section>
         </section>
@@ -77,7 +78,7 @@
             <br>
             <h3>Don't assume a current "always"</h3>
             <h3>Leave room for new use cases</h3>
-            <pre class='fragment'><code class='ruby'>class Loan < ActiveRecord::Base&#x000A;  before_create :notify_user_they_got_the_loan&#x000A;end&#x000A;</code></pre>
+            <pre class='fragment'><code class='ruby'>class Loan < ActiveRecord::Base&#x000A;  after_create :notify_user_they_got_the_loan&#x000A;end&#x000A;&#x000A;Loan.create!(user: .., apr:..., amount:...)&#x000A;</code></pre>
             <p class='fragment'>
               Do I really
               <strong>ALWAYS</strong>
@@ -123,17 +124,6 @@
             </p>
           </section>
           <section>
-            <h2>don't put behavioural methods onto models</h2>
-            <h3>Really, just the ISP</h3>
-            <div class='fragment'>
-              <pre><code class='ruby'>def create&#x000A;  current_loan.add_payment params[:payment]&#x000A;end&#x000A;</code></pre>
-              <p>becomes</p>
-              <pre><code class='ruby'>def create&#x000A;  AddPayment.new(current_loan, params[:payment]).call&#x000A;end&#x000A;</code></pre>
-              <p>or, if possible</p>
-              <pre><code class='ruby'>def create&#x000A;  AddPayment.new(current_loan, params[:payment]).call.save&#x000A;end&#x000A;</code></pre>
-            </div>
-          </section>
-          <section>
             <h2>Don't mutate inputs</h2>
             <br>
             <h3>Especially to the outside world and to inputs.</h3>
@@ -153,14 +143,14 @@
             <pre><code class='ruby'>interest_accrued_over D('1.23'), D('500'), start_date, end_date&#x000A;</code></pre>
           </section>
           <section>
-            <h2>Remove timing dependencies</h2>
-            <h3>Separate an object with a timing dependency into a function and data structure</h3>
-            <pre><code class='ruby'>class Inputs < Struct.new(:payments, :sum)&#x000A;  def initialize(loan)&#x000A;    @loan = loan&#x000A;  end&#x000A;&#x000A;  def calculate&#x000A;    self.payments = @loan.payments.incoming.successful&#x000A;    self.sum      = payments.map(&:amount).sum&#x000A;  end&#x000A;end&#x000A;</code></pre>
+            <h2>Remove Temporal Coupling</h2>
+            <h3>Separate an object with a specific order of calls into a function and data structure</h3>
+            <pre><code class='ruby'>class Inputs < Struct.new(:payments, :sum)&#x000A;  def initialize(loan)&#x000A;    self.loan = loan&#x000A;  end&#x000A;&#x000A;  def calculate&#x000A;    self.payments = @loan.payments.incoming.successful&#x000A;    self.sum      = payments.map(&:amount).sum&#x000A;  end&#x000A;end&#x000A;</code></pre>
             <p>becomes</p>
             <pre><code class='ruby'>class Inputs < Struct.new(:payments, :sum)&#x000A;  def self.for(loan)&#x000A;    payments = loan.payments.incoming.successful&#x000A;    sum      = payments.map(&:amount).sum&#x000A;    new(payments, sum)&#x000A;  end&#x000A;end&#x000A;&#x000A;</code></pre>
           </section>
           <section>
-            <h2>Remove knowledge dependencies</h2>
+            <h2>Remove knowledge Coupling</h2>
             <br>
             <h3>This takes many forms</h3>
             <br>
@@ -234,7 +224,7 @@
           </section>
           <section>
             <h2>Kick everything off explicitly</h2>
-            <pre><code class='ruby'>class Loan&#x000A;  before_create :notify_user_they_got_the_loan&#x000A;end&#x000A;</code></pre>
+            <pre><code class='ruby'>class Loan&#x000A;  after_create :notify_user_they_got_the_loan&#x000A;end&#x000A;</code></pre>
             <p>becomes</p>
             <pre><code class='ruby'>class CreateLoan&#x000A;  def call(...)&#x000A;    loan = Loan.new(...)&#x000A;    notify_user_they_got_the_loan if loan.save&#x000A;  end&#x000A;end&#x000A;&#x000A;</code></pre>
           </section>
@@ -247,10 +237,7 @@
           </section>
           <section>
             <h2>Avoid magic</h2>
-            e.g. routes
-            <pre><code class='ruby'>resources :users&#x000A;</code></pre>
-            <pre class='fragment'><code>$ bundle exec rake routes&#x000A;   Prefix Verb   URI Pattern               Controller#Action&#x000A;    users GET    /users(.:format)          users#index&#x000A;          POST   /users(.:format)          users#create&#x000A; new_user GET    /users/new(.:format)      users#new&#x000A;edit_user GET    /users/:id/edit(.:format) users#edit&#x000A;     user GET    /users/:id(.:format)      users#show&#x000A;          PATCH  /users/:id(.:format)      users#update&#x000A;          PUT    /users/:id(.:format)      users#update&#x000A;          DELETE /users/:id(.:format)      users#destroy&#x000A;</code></pre>
-            <pre class='fragment'><code class='ruby'>get    '/users(.:format)'          => 'users#index',  as: :users&#x000A;post   '/users(.:format)'          => 'users#create'&#x000A;get    '/users/new(.:format)'      => 'users#new',    as: :new_user&#x000A;get    '/users/:id/edit(.:format)' => 'users#edit',   as: :edit_user&#x000A;get    '/users/:id(.:format)'      => 'users#show',   as: :user&#x000A;patch  '/users/:id(.:format)'      => 'users#update'&#x000A;put    '/users/:id(.:format)'      => 'users#update'&#x000A;delete '/users/:id(.:format)'      => 'users#destroy'&#x000A;</code></pre>
+            <pre><code class='ruby'>FactoryGirl.define do&#x000A;  factory :contract do&#x000A;    contract_template&#x000A;    decision 'approved'&#x000A;    lender { Lender["netcredit"] }&#x000A;  end&#x000A;&#x000A;  factory :contract_template do&#x000A;    # ...&#x000A;  end&#x000A;end&#x000A;&#x000A;</code></pre>
           </section>
           <section>
             <h2>Avoid metaprogramming</h2>
@@ -275,6 +262,32 @@
             </ul>
           </section>
         </section>
+        <section class='extras'>
+          <section>
+            <h2>Learn your tools</h2>
+            <ul>
+              <li>Your editor</li>
+              <li>The console</li>
+              <li>The language</li>
+              <li>Your database</li>
+              <li>Your Libraries</li>
+              <li>Your browser</li>
+            </ul>
+          </section>
+          <section>
+            <h2>Be honest</h2>
+            <ul>
+              <li>Admit your failures</li>
+              <li>Estimate without ego or optimism</li>
+              <li>You're not as good as you think you are</li>
+              <li>Set accurate expectations</li>
+              <li>Analyze what is working and not working</li>
+              <li>Experiment with problem domains to find better ways</li>
+              <li>Tell people when you disagree with them</li>
+              <li>Accept criticism</li>
+            </ul>
+          </section>
+        </section>
         <section class='conclusion'>
           <section>
             <h2>Categories</h2>
@@ -282,6 +295,7 @@
               <li>Write maintainable code</li>
               <li>Minimize dependencies</li>
               <li>Be explicit</li>
+              <li>Extras</li>
             </ul>
           </section>
         </section>

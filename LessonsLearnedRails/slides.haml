@@ -1,6 +1,6 @@
 %section.intro
   %section
-    %h1 Real World Rails
+    %h1 Real World (not) Rails
     %br
     %h3 Lessons Learned
     %h3 for Loving Your Codebase 2.5 Years Later
@@ -28,6 +28,7 @@
       %li Write maintainable code
       %li Minimize dependencies
       %li Be explicit
+      %li Extras
 
 %section.maintainable_code
   %section
@@ -68,8 +69,10 @@
       %code.ruby
         :preserve
           class Loan < ActiveRecord::Base
-            before_create :notify_user_they_got_the_loan
+            after_create :notify_user_they_got_the_loan
           end
+
+          Loan.create!(user: .., apr:..., amount:...)
 
     %p.fragment
       Do I really
@@ -123,35 +126,6 @@
       If our class is immutable, this isn't such a big deal,
       we can think of it as dependency inversion.
       But we can't see how we change based on what this class does to us.
-
-  %section
-    %h2 don't put behavioural methods onto models
-    %h3 Really, just the ISP
-    %div.fragment
-      %pre
-        %code.ruby
-          :preserve
-            def create
-              current_loan.add_payment params[:payment]
-            end
-
-      %p becomes
-
-      %pre
-        %code.ruby
-          :preserve
-            def create
-              AddPayment.new(current_loan, params[:payment]).call
-            end
-
-      %p or, if possible
-
-      %pre
-        %code.ruby
-          :preserve
-            def create
-              AddPayment.new(current_loan, params[:payment]).call.save
-            end
 
   %section
     %h2 Don't mutate inputs
@@ -215,15 +189,15 @@
           interest_accrued_over D('1.23'), D('500'), start_date, end_date
 
   %section
-    %h2 Remove timing dependencies
-    %h3 Separate an object with a timing dependency into a function and data structure
+    %h2 Remove Temporal Coupling
+    %h3 Separate an object with a specific order of calls into a function and data structure
 
     %pre
       %code.ruby
         :preserve
           class Inputs < Struct.new(:payments, :sum)
             def initialize(loan)
-              @loan = loan
+              self.loan = loan
             end
 
             def calculate
@@ -247,7 +221,7 @@
 
 
   %section
-    %h2 Remove knowledge dependencies
+    %h2 Remove knowledge Coupling
     %br
     %h3 This takes many forms
     %br
@@ -378,7 +352,7 @@
       %code.ruby
         :preserve
           class Loan
-            before_create :notify_user_they_got_the_loan
+            after_create :notify_user_they_got_the_loan
           end
 
     %p becomes
@@ -416,39 +390,21 @@
 
   %section
     %h2 Avoid magic
-
-    e.g. routes
-
     %pre
       %code.ruby
         :preserve
-          resources :users
+          FactoryGirl.define do
+            factory :contract do
+              contract_template
+              decision 'approved'
+              lender { Lender["netcredit"] }
+            end
 
-    %pre.fragment
-      %code
-        :preserve
-          $ bundle exec rake routes
-             Prefix Verb   URI Pattern               Controller#Action
-              users GET    /users(.:format)          users#index
-                    POST   /users(.:format)          users#create
-           new_user GET    /users/new(.:format)      users#new
-          edit_user GET    /users/:id/edit(.:format) users#edit
-               user GET    /users/:id(.:format)      users#show
-                    PATCH  /users/:id(.:format)      users#update
-                    PUT    /users/:id(.:format)      users#update
-                    DELETE /users/:id(.:format)      users#destroy
+            factory :contract_template do
+              # ...
+            end
+          end
 
-    %pre.fragment
-      %code.ruby
-        :preserve
-          get    '/users(.:format)'          => 'users#index',  as: :users
-          post   '/users(.:format)'          => 'users#create'
-          get    '/users/new(.:format)'      => 'users#new',    as: :new_user
-          get    '/users/:id/edit(.:format)' => 'users#edit',   as: :edit_user
-          get    '/users/:id(.:format)'      => 'users#show',   as: :user
-          patch  '/users/:id(.:format)'      => 'users#update'
-          put    '/users/:id(.:format)'      => 'users#update'
-          delete '/users/:id(.:format)'      => 'users#destroy'
 
   %section
     %h2 Avoid metaprogramming
@@ -470,6 +426,31 @@
       %li Often involve singletons
       %li Often affect state (e.g. Capybara DSL)
 
+%section.extras
+  %section
+    %h2 Learn your tools
+    %ul
+      %li Your editor
+      %li The console
+      %li The language
+      %li Your database
+      %li Your Libraries
+      %li Your browser
+
+  %section
+    %h2 Be honest
+
+    %ul
+      %li Admit your failures
+      %li Estimate without ego or optimism
+      %li You're not as good as you think you are
+      %li Set accurate expectations
+      %li Analyze what is working and not working
+      %li Experiment with problem domains to find better ways
+      %li Tell people when you disagree with them
+      %li Accept criticism
+
+
 %section.conclusion
   %section
     %h2 Categories
@@ -477,3 +458,4 @@
       %li Write maintainable code
       %li Minimize dependencies
       %li Be explicit
+      %li Extras
