@@ -8,19 +8,20 @@
     %h2 Josh Cheek
 
   %section
+    %img{src: 'img/turing.png', style: 'border: 0; box-shadow: none;'}
+
+
+  %section
     %h2 Introduction
     %ul
-      %li 2.5 years on client project
-      %li greenfield(ish)
-      %li 5 brands now building in it
-      %li some code is good, some is bad
-      %li much of the bad has become good
-      %li time gives perspective
+      %li 2.5 years on online lending app
+      %li greenfield -> 5 brands
+      %li There's good code, there's bad code
       %li I read more than write
       %li new users need to be able to understand
       %li here is what I've learned
       %li many ideas are functional
-      %li this talk works best as a conversation, so participate!
+      %li Please engage me in conversation/debate!
 
   %section
     %h2 Categories
@@ -43,19 +44,26 @@
     %pre.fragment
       %code.ruby
         :preserve
-          User = Struct.new :first_name, :last_name do
+          class User
+            attr_accessor :first_name, :last_name
+            def initialize(first_name, last_name)
+              @first_name, @last_name = first_name, last_name
+            end
+            
             def full_name
               @full_name ||= "\#{first_name} \#{last_name}"
             end
           end
-
+    %pre.fragment
+      %code.ruby
+        :preserve
           user = User.new 'Paul', 'Pagel'
-          user.full_name
-          # => "Paul Pagel"
-
-          user.first_name = 'Margaret'
-          user.full_name
-          # => "Paul Pagel"
+          user.full_name # => "Paul Pagel"
+    %pre.fragment
+      %code.ruby
+        :preserve
+          user.firrst_name = 'Margaret'
+          user.full_name # => "Paul Pagel"
     %h3.fragment In this case: mutable state breaks caching
 
 
@@ -77,14 +85,6 @@
       want to do this? Even if there are regulations, don't assume "yes".
 
   %section
-    %h2 Build yourself tools
-    %br
-    %h3 Take the time to make your environment better
-    %img{src: 'img/ttt1.png'}
-    %img{src: 'img/ttt2.png'}
-
-
-  %section
     %h2 Avoid modules (inheritance)
     %br
     %h3 Choose composition instead
@@ -93,9 +93,9 @@
         :preserve
           class SomethingController < ApplicationController
             def create
-              Rails.version                  # => "4.0.0"
-              singleton_class.ancestors.size # => 63
-              methods.size                   # => 336
+              Rails.version                  # => "4.1.0"
+              singleton_class.ancestors.size # => 65
+              methods.size                   # => 346
             end
           end
 
@@ -106,6 +106,29 @@
       None of
       = link_to 'this', 'https://github.com/JoshCheek/surrogate/blob/e83ca978a72caa4f088903b5470ba37b05a87691/lib/surrogate/endower.rb#L58-76'
       nonsense is necessary
+
+  %section
+    %h2 Build yourself tools
+    %br
+    %h3 Take the time to make your environment better
+    %h4
+      %a{href: 'https://github.com/JoshCheek/ttt/blob/master/Rakefile#L227-320'} TTT Explorer
+      •
+      %a{href: "https://github.com/JoshCheek/seeing_is_believing"} Seeing Is Believing
+      •
+      Dev only routes
+    %img{src: 'img/ttt1.png'}
+    %img{src: 'img/ttt2.png'}
+  
+  %section
+    %h2 Write maintainable code
+    %ul
+      %li No incorrect objects
+      %li Don't hard-code assumptions
+      %li Avoid modules
+      %li Don't invent requirements
+      %li Build yourself tools
+
 
 %section.minimize_dependencies
   %section
@@ -141,7 +164,7 @@
         %code.ruby
           :preserve
             def create
-              AddPayment.new(current_loan, params[:payment]).call
+              AddPayment.call(current_loan, params[:payment])
             end
 
       %p or, if possible
@@ -150,13 +173,12 @@
         %code.ruby
           :preserve
             def create
-              AddPayment.new(current_loan, params[:payment]).call.save
+              AddPayment.call(current_loan, params[:payment]).save
             end
 
   %section
     %h2 Don't mutate inputs
     %br
-    %h3 Especially to the outside world and to inputs.
     %h3 Work with values.
     %br
     %div
@@ -164,8 +186,7 @@
         %code.ruby
           :preserve
             def accrue_interest(loan, start_date, end_date)
-              loan.accrued_interest = (loan.daily_interest_rate * loan.principal) *
-                                      (start_date - end_date)
+              loan.accrued_interest = ...
             end
 
       %p becomes
@@ -174,8 +195,7 @@
         %code.ruby
           :preserve
             def interest_accrued_over(loan, start_date, end_date)
-              (loan.daily_interest_rate * loan.principal) *
-              (start_date - end_date)
+              ...
             end
             loan.accrued_interest = interest_accrued_over loan,
                                                           start_date,
@@ -187,8 +207,7 @@
       %code.ruby
         :preserve
           def interest_accrued_over(loan, start_date, end_date)
-            (loan.daily_interest_rate * loan.principal) *
-            (start_date - end_date)
+            loan.daily_interest_rate * ...
           end
           loan.accrued_interest = interest_accrued_over loan,
                                                         start_date,
@@ -201,9 +220,8 @@
         :preserve
 
           def interest_accrued_over(daily_interest_rate, principal,
-                                      start_date, end_date)
-            (daily_interest_rate * principal) *
-            (start_date - end_date)
+                                    start_date, end_date)
+            daily_interest_rate * ...
           end
           loan.accrued_interest = interest_accrued_over loan.daily_interest_rate,
                                                         loan.principal,
@@ -215,8 +233,8 @@
           interest_accrued_over D('1.23'), D('500'), start_date, end_date
 
   %section
-    %h2 Remove timing dependencies
-    %h3 Separate an object with a timing dependency into a function and data structure
+    %h2 Remove temporal coupling
+    %h3 Separate into a function and data structure
 
     %pre
       %code.ruby
@@ -227,8 +245,8 @@
             end
 
             def calculate
-              self.payments = @loan.payments.incoming.successful
-              self.sum      = payments.map(&:amount).sum
+              self.payments = ...
+              self.sum      = ...
             end
           end
 
@@ -239,8 +257,8 @@
         :preserve
           class Inputs < Struct.new(:payments, :sum)
             def self.for(loan)
-              payments = loan.payments.incoming.successful
-              sum      = payments.map(&:amount).sum
+              payments = ...
+              sum      = ...
               new(payments, sum)
             end
           end
@@ -261,6 +279,17 @@
     %h3 Wait, why are we updating email?
     %h3 Push that down to the back end
 
+  %section
+    %h2 Minimize Dependencies
+    %ul
+      %li All dependencies point downwards
+      %li Don't put behavioural methods onto models
+      %li Don't mutate inputs
+      %li Tend towards primitives
+      %li Remove temporal coupling
+      %li Remove knowledge dependencies
+
+
 
 %section.be_explicit
   %section
@@ -278,9 +307,9 @@
 
     %br
     %ul
-      %li.fragment What are we padding with?
-      %li.fragment Are we padding the left or right side?
-      %li.fragment Is the padding done eagerly or lazily?
+      %li What are we padding with?
+      %li Are we padding the left or right side?
+      %li Is the padding done eagerly or lazily?
 
     %br
     %br
@@ -331,48 +360,6 @@
 
 
   %section
-    %h2 Explicit Inputs
-    %ul
-      %li Pass in everything you need to do the job, don't rely on the external context
-      %li Makes debugging much easier
-      %li Reduces the amount of state that you need to keep in your head
-      %li Makes refactoring easier
-      %li Easier to test
-
-  %section
-    %h2 Examples of Explicit Inputs
-    %br
-    %pre
-      %code.ruby
-        :preserve
-          def do_something(a, b)
-            @c + ARGV.select { |arg| ... }
-          end
-
-    %p becomes
-
-    %pre
-      %code.ruby
-        :preserve
-          def do_something(argv, a, b, c)
-            c + argv.select { |arg| ... }
-          end
-
-    %div.fragment
-      %br
-      %p another example
-
-      %pre
-        %code.ruby
-          :preserve
-            class SomethingController < ApplicationController
-              def create
-                # what can I even do in here?
-              end
-            end
-
-
-  %section
     %h2 Kick everything off explicitly
     %pre
       %code.ruby
@@ -395,7 +382,7 @@
 
 
   %section
-    %h2 Caller is responsible for formatting inputs
+    %h2 Caller formats inputs
     %br
     %pre
       %code.ruby
@@ -470,10 +457,13 @@
       %li Often involve singletons
       %li Often affect state (e.g. Capybara DSL)
 
-%section.conclusion
-  %section
-    %h2 Categories
-    %ul
-      %li Write maintainable code
-      %li Minimize dependencies
-      %li Be explicit
+    %section
+      %h2 Minimize Dependencies
+      %ul
+        %li Don't hide important details under abstractions
+        %li Use function objects
+        %li Kick everything off explicitly
+        %li Caller formats inputs
+        %li Avoid magic
+        %li Avoid metaprogramming
+        %li Avoid DSLs

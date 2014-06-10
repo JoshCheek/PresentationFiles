@@ -34,19 +34,19 @@
             <h2>Josh Cheek</h2>
           </section>
           <section>
+            <img src='img/turing.png' style='border: 0; box-shadow: none;'>
+          </section>
+          <section>
             <h2>Introduction</h2>
             <ul>
-              <li>2.5 years on client project</li>
-              <li>greenfield(ish)</li>
-              <li>5 brands now building in it</li>
-              <li>some code is good, some is bad</li>
-              <li>much of the bad has become good</li>
-              <li>time gives perspective</li>
+              <li>2.5 years on online lending app</li>
+              <li>greenfield -> 5 brands</li>
+              <li>There's good code, there's bad code</li>
               <li>I read more than write</li>
               <li>new users need to be able to understand</li>
               <li>here is what I've learned</li>
               <li>many ideas are functional</li>
-              <li>this talk works best as a conversation, so participate!</li>
+              <li>Please engage me in conversation/debate!</li>
             </ul>
           </section>
           <section>
@@ -69,7 +69,9 @@
           </section>
           <section>
             <h2>You shouldn't be able to use an object incorrectly</h2>
-            <pre class='fragment'><code class='ruby'>User = Struct.new :first_name, :last_name do&#x000A;  def full_name&#x000A;    @full_name ||= "#{first_name} #{last_name}"&#x000A;  end&#x000A;end&#x000A;&#x000A;user = User.new 'Paul', 'Pagel'&#x000A;user.full_name&#x000A;# => "Paul Pagel"&#x000A;&#x000A;user.first_name = 'Margaret'&#x000A;user.full_name&#x000A;# => "Paul Pagel"</code></pre>
+            <pre class='fragment'><code class='ruby'>class User&#x000A;  attr_accessor :first_name, :last_name&#x000A;  def initialize(first_name, last_name)&#x000A;    @first_name, @last_name = first_name, last_name&#x000A;  end&#x000A;  &#x000A;  def full_name&#x000A;    @full_name ||= "#{first_name} #{last_name}"&#x000A;  end&#x000A;end</code></pre>
+            <pre class='fragment'><code class='ruby'>user = User.new 'Paul', 'Pagel'&#x000A;user.full_name # => "Paul Pagel"</code></pre>
+            <pre class='fragment'><code class='ruby'>user.firrst_name = 'Margaret'&#x000A;user.full_name # => "Paul Pagel"</code></pre>
             <h3 class='fragment'>In this case: mutable state breaks caching</h3>
           </section>
           <section>
@@ -85,17 +87,10 @@
             </p>
           </section>
           <section>
-            <h2>Build yourself tools</h2>
-            <br>
-            <h3>Take the time to make your environment better</h3>
-            <img src='img/ttt1.png'>
-            <img src='img/ttt2.png'>
-          </section>
-          <section>
             <h2>Avoid modules (inheritance)</h2>
             <br>
             <h3>Choose composition instead</h3>
-            <pre class='fragment'><code class='ruby'>class SomethingController < ApplicationController&#x000A;  def create&#x000A;    Rails.version                  # => "4.0.0"&#x000A;    singleton_class.ancestors.size # => 63&#x000A;    methods.size                   # => 336&#x000A;  end&#x000A;end&#x000A;</code></pre>
+            <pre class='fragment'><code class='ruby'>class SomethingController < ApplicationController&#x000A;  def create&#x000A;    Rails.version                  # => "4.1.0"&#x000A;    singleton_class.ancestors.size # => 65&#x000A;    methods.size                   # => 346&#x000A;  end&#x000A;end&#x000A;</code></pre>
           </section>
           <section>
             <h2>Don't invent requirements</h2>
@@ -105,6 +100,30 @@
               <a href='https://github.com/JoshCheek/surrogate/blob/e83ca978a72caa4f088903b5470ba37b05a87691/lib/surrogate/endower.rb#L58-76'>this</a>
               nonsense is necessary
             </p>
+          </section>
+          <section>
+            <h2>Build yourself tools</h2>
+            <br>
+            <h3>Take the time to make your environment better</h3>
+            <h4>
+              <a href='https://github.com/JoshCheek/ttt/blob/master/Rakefile#L227-320'>TTT Explorer</a>
+              •
+              <a href='https://github.com/JoshCheek/seeing_is_believing'>Seeing Is Believing</a>
+              •
+              Dev only routes
+            </h4>
+            <img src='img/ttt1.png'>
+            <img src='img/ttt2.png'>
+          </section>
+          <section>
+            <h2>Write maintainable code</h2>
+            <ul>
+              <li>No incorrect objects</li>
+              <li>Don't hard-code assumptions</li>
+              <li>Avoid modules</li>
+              <li>Don't invent requirements</li>
+              <li>Build yourself tools</li>
+            </ul>
           </section>
         </section>
         <section class='minimize_dependencies'>
@@ -128,36 +147,35 @@
             <div class='fragment'>
               <pre><code class='ruby'>def create&#x000A;  current_loan.add_payment params[:payment]&#x000A;end&#x000A;</code></pre>
               <p>becomes</p>
-              <pre><code class='ruby'>def create&#x000A;  AddPayment.new(current_loan, params[:payment]).call&#x000A;end&#x000A;</code></pre>
+              <pre><code class='ruby'>def create&#x000A;  AddPayment.call(current_loan, params[:payment])&#x000A;end&#x000A;</code></pre>
               <p>or, if possible</p>
-              <pre><code class='ruby'>def create&#x000A;  AddPayment.new(current_loan, params[:payment]).call.save&#x000A;end&#x000A;</code></pre>
+              <pre><code class='ruby'>def create&#x000A;  AddPayment.call(current_loan, params[:payment]).save&#x000A;end&#x000A;</code></pre>
             </div>
           </section>
           <section>
             <h2>Don't mutate inputs</h2>
             <br>
-            <h3>Especially to the outside world and to inputs.</h3>
             <h3>Work with values.</h3>
             <br>
             <div>
-              <pre><code class='ruby'>def accrue_interest(loan, start_date, end_date)&#x000A;  loan.accrued_interest = (loan.daily_interest_rate * loan.principal) *&#x000A;                          (start_date - end_date)&#x000A;end&#x000A;</code></pre>
+              <pre><code class='ruby'>def accrue_interest(loan, start_date, end_date)&#x000A;  loan.accrued_interest = ...&#x000A;end&#x000A;</code></pre>
               <p>becomes</p>
-              <pre><code class='ruby'>def interest_accrued_over(loan, start_date, end_date)&#x000A;  (loan.daily_interest_rate * loan.principal) *&#x000A;  (start_date - end_date)&#x000A;end&#x000A;loan.accrued_interest = interest_accrued_over loan,&#x000A;                                              start_date,&#x000A;                                              end_date&#x000A;</code></pre>
+              <pre><code class='ruby'>def interest_accrued_over(loan, start_date, end_date)&#x000A;  ...&#x000A;end&#x000A;loan.accrued_interest = interest_accrued_over loan,&#x000A;                                              start_date,&#x000A;                                              end_date&#x000A;</code></pre>
             </div>
           </section>
           <section>
             <h2>Tend towards primitives</h2>
-            <pre><code class='ruby'>def interest_accrued_over(loan, start_date, end_date)&#x000A;  (loan.daily_interest_rate * loan.principal) *&#x000A;  (start_date - end_date)&#x000A;end&#x000A;loan.accrued_interest = interest_accrued_over loan,&#x000A;                                              start_date,&#x000A;                                              end_date&#x000A;</code></pre>
+            <pre><code class='ruby'>def interest_accrued_over(loan, start_date, end_date)&#x000A;  loan.daily_interest_rate * ...&#x000A;end&#x000A;loan.accrued_interest = interest_accrued_over loan,&#x000A;                                              start_date,&#x000A;                                              end_date&#x000A;</code></pre>
             <p>becomes</p>
-            <pre><code class='ruby'>def interest_accrued_over(daily_interest_rate, principal,&#x000A;                            start_date, end_date)&#x000A;  (daily_interest_rate * principal) *&#x000A;  (start_date - end_date)&#x000A;end&#x000A;loan.accrued_interest = interest_accrued_over loan.daily_interest_rate,&#x000A;                                              loan.principal,&#x000A;                                              start_date,&#x000A;                                              end_date</code></pre>
+            <pre><code class='ruby'>def interest_accrued_over(daily_interest_rate, principal,&#x000A;                          start_date, end_date)&#x000A;  daily_interest_rate * ...&#x000A;end&#x000A;loan.accrued_interest = interest_accrued_over loan.daily_interest_rate,&#x000A;                                              loan.principal,&#x000A;                                              start_date,&#x000A;                                              end_date</code></pre>
             <pre><code class='ruby'>interest_accrued_over D('1.23'), D('500'), start_date, end_date&#x000A;</code></pre>
           </section>
           <section>
-            <h2>Remove timing dependencies</h2>
-            <h3>Separate an object with a timing dependency into a function and data structure</h3>
-            <pre><code class='ruby'>class Inputs < Struct.new(:payments, :sum)&#x000A;  def initialize(loan)&#x000A;    @loan = loan&#x000A;  end&#x000A;&#x000A;  def calculate&#x000A;    self.payments = @loan.payments.incoming.successful&#x000A;    self.sum      = payments.map(&:amount).sum&#x000A;  end&#x000A;end&#x000A;</code></pre>
+            <h2>Remove temporal coupling</h2>
+            <h3>Separate into a function and data structure</h3>
+            <pre><code class='ruby'>class Inputs < Struct.new(:payments, :sum)&#x000A;  def initialize(loan)&#x000A;    @loan = loan&#x000A;  end&#x000A;&#x000A;  def calculate&#x000A;    self.payments = ...&#x000A;    self.sum      = ...&#x000A;  end&#x000A;end&#x000A;</code></pre>
             <p>becomes</p>
-            <pre><code class='ruby'>class Inputs < Struct.new(:payments, :sum)&#x000A;  def self.for(loan)&#x000A;    payments = loan.payments.incoming.successful&#x000A;    sum      = payments.map(&:amount).sum&#x000A;    new(payments, sum)&#x000A;  end&#x000A;end&#x000A;&#x000A;</code></pre>
+            <pre><code class='ruby'>class Inputs < Struct.new(:payments, :sum)&#x000A;  def self.for(loan)&#x000A;    payments = ...&#x000A;    sum      = ...&#x000A;    new(payments, sum)&#x000A;  end&#x000A;end&#x000A;&#x000A;</code></pre>
           </section>
           <section>
             <h2>Remove knowledge dependencies</h2>
@@ -168,6 +186,17 @@
             <br>
             <h3>Wait, why are we updating email?</h3>
             <h3>Push that down to the back end</h3>
+          </section>
+          <section>
+            <h2>Minimize Dependencies</h2>
+            <ul>
+              <li>All dependencies point downwards</li>
+              <li>Don't put behavioural methods onto models</li>
+              <li>Don't mutate inputs</li>
+              <li>Tend towards primitives</li>
+              <li>Remove temporal coupling</li>
+              <li>Remove knowledge dependencies</li>
+            </ul>
           </section>
         </section>
         <section class='be_explicit'>
@@ -180,9 +209,9 @@
             <pre><code class='ruby'>def padded_take ary, n&#x000A;  pad(ary, n).take(n)&#x000A;end&#x000A;</code></pre>
             <br>
             <ul>
-              <li class='fragment'>What are we padding with?</li>
-              <li class='fragment'>Are we padding the left or right side?</li>
-              <li class='fragment'>Is the padding done eagerly or lazily?</li>
+              <li>What are we padding with?</li>
+              <li>Are we padding the left or right side?</li>
+              <li>Is the padding done eagerly or lazily?</li>
             </ul>
             <br>
             <br>
@@ -211,35 +240,13 @@
             </ul>
           </section>
           <section>
-            <h2>Explicit Inputs</h2>
-            <ul>
-              <li>Pass in everything you need to do the job, don't rely on the external context</li>
-              <li>Makes debugging much easier</li>
-              <li>Reduces the amount of state that you need to keep in your head</li>
-              <li>Makes refactoring easier</li>
-              <li>Easier to test</li>
-            </ul>
-          </section>
-          <section>
-            <h2>Examples of Explicit Inputs</h2>
-            <br>
-            <pre><code class='ruby'>def do_something(a, b)&#x000A;  @c + ARGV.select { |arg| ... }&#x000A;end&#x000A;</code></pre>
-            <p>becomes</p>
-            <pre><code class='ruby'>def do_something(argv, a, b, c)&#x000A;  c + argv.select { |arg| ... }&#x000A;end&#x000A;</code></pre>
-            <div class='fragment'>
-              <br>
-              <p>another example</p>
-              <pre><code class='ruby'>class SomethingController < ApplicationController&#x000A;  def create&#x000A;    # what can I even do in here?&#x000A;  end&#x000A;end&#x000A;&#x000A;</code></pre>
-            </div>
-          </section>
-          <section>
             <h2>Kick everything off explicitly</h2>
             <pre><code class='ruby'>class Loan&#x000A;  before_create :notify_user_they_got_the_loan&#x000A;end&#x000A;</code></pre>
             <p>becomes</p>
             <pre><code class='ruby'>class CreateLoan&#x000A;  def call(...)&#x000A;    loan = Loan.new(...)&#x000A;    notify_user_they_got_the_loan if loan.save&#x000A;  end&#x000A;end&#x000A;&#x000A;</code></pre>
           </section>
           <section>
-            <h2>Caller is responsible for formatting inputs</h2>
+            <h2>Caller formats inputs</h2>
             <br>
             <pre><code class='ruby'>def notify_user(user_or_id, message)&#x000A;  user = user_or_id&#x000A;  user = User.find user_or_id unless user.kind_of? User&#x000A;  # ...&#x000A;end&#x000A;</code></pre>
             <br>becomes</br>
@@ -273,16 +280,18 @@
               <li>Often involve singletons</li>
               <li>Often affect state (e.g. Capybara DSL)</li>
             </ul>
-          </section>
-        </section>
-        <section class='conclusion'>
-          <section>
-            <h2>Categories</h2>
-            <ul>
-              <li>Write maintainable code</li>
-              <li>Minimize dependencies</li>
-              <li>Be explicit</li>
-            </ul>
+            <section>
+              <h2>Minimize Dependencies</h2>
+              <ul>
+                <li>Don't hide important details under abstractions</li>
+                <li>Use function objects</li>
+                <li>Kick everything off explicitly</li>
+                <li>Caller formats inputs</li>
+                <li>Avoid magic</li>
+                <li>Avoid metaprogramming</li>
+                <li>Avoid DSLs</li>
+              </ul>
+            </section>
           </section>
         </section>
       </div>
