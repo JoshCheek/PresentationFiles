@@ -297,29 +297,37 @@
 
   %section
     %h2 Don't hide important details under abstractions
-    %br
+
     %pre
       %code.ruby
         :preserve
-          def padded_take ary, n
-            pad(ary, n).take(n)
-          end
+          resources :users
 
-    %br
-    %ul
-      %li What are we padding with?
-      %li Are we padding the left or right side?
-      %li Is the padding done eagerly or lazily?
+    %pre.fragment
+      %code
+        :preserve
+          $ bundle exec rake routes
+             Prefix Verb   URI Pattern               Controller#Action
+              users GET    /users(.:format)          users#index
+                    POST   /users(.:format)          users#create
+           new_user GET    /users/new(.:format)      users#new
+          edit_user GET    /users/:id/edit(.:format) users#edit
+               user GET    /users/:id(.:format)      users#show
+                    PATCH  /users/:id(.:format)      users#update
+                    PUT    /users/:id(.:format)      users#update
+                    DELETE /users/:id(.:format)      users#destroy
 
-    %br
-    %br
     %pre.fragment
       %code.ruby
         :preserve
-          def pad ary, n
-            pad_length = [0, n - ary.length].max
-            ary + [0] * pad_length
-          end
+          get    '/users(.:format)'          => 'users#index',  as: :users
+          post   '/users(.:format)'          => 'users#create'
+          get    '/users/new(.:format)'      => 'users#new',    as: :new_user
+          get    '/users/:id/edit(.:format)' => 'users#edit',   as: :edit_user
+          get    '/users/:id(.:format)'      => 'users#show',   as: :user
+          patch  '/users/:id(.:format)'      => 'users#update'
+          put    '/users/:id(.:format)'      => 'users#update'
+          delete '/users/:id(.:format)'      => 'users#destroy'
 
 
   %section
@@ -402,43 +410,7 @@
           end
 
   %section
-    %h2 Avoid magic
-
-    e.g. routes
-
-    %pre
-      %code.ruby
-        :preserve
-          resources :users
-
-    %pre.fragment
-      %code
-        :preserve
-          $ bundle exec rake routes
-             Prefix Verb   URI Pattern               Controller#Action
-              users GET    /users(.:format)          users#index
-                    POST   /users(.:format)          users#create
-           new_user GET    /users/new(.:format)      users#new
-          edit_user GET    /users/:id/edit(.:format) users#edit
-               user GET    /users/:id(.:format)      users#show
-                    PATCH  /users/:id(.:format)      users#update
-                    PUT    /users/:id(.:format)      users#update
-                    DELETE /users/:id(.:format)      users#destroy
-
-    %pre.fragment
-      %code.ruby
-        :preserve
-          get    '/users(.:format)'          => 'users#index',  as: :users
-          post   '/users(.:format)'          => 'users#create'
-          get    '/users/new(.:format)'      => 'users#new',    as: :new_user
-          get    '/users/:id/edit(.:format)' => 'users#edit',   as: :edit_user
-          get    '/users/:id(.:format)'      => 'users#show',   as: :user
-          patch  '/users/:id(.:format)'      => 'users#update'
-          put    '/users/:id(.:format)'      => 'users#update'
-          delete '/users/:id(.:format)'      => 'users#destroy'
-
-  %section
-    %h2 Avoid metaprogramming
+    %h2 Avoid magic (metaprogramming)
     %br
     %ul
       %li Methods you can't see but can call
@@ -457,13 +429,17 @@
       %li Often involve singletons
       %li Often affect state (e.g. Capybara DSL)
 
-    %section
-      %h2 Minimize Dependencies
-      %ul
-        %li Don't hide important details under abstractions
-        %li Use function objects
-        %li Kick everything off explicitly
-        %li Caller formats inputs
-        %li Avoid magic
-        %li Avoid metaprogramming
-        %li Avoid DSLs
+  %section
+    %h2 Be Explicit
+    %ul
+      %li Don't hide important details under abstractions
+      %li Use function objects
+      %li Kick everything off explicitly
+      %li Caller formats inputs
+      %li Avoid magic (metaprogramming)
+      %li Avoid DSLs
+        
+
+%section.questions_and_comments
+  %section
+    %h1 Questions And Comments

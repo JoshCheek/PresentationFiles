@@ -205,17 +205,9 @@
           </section>
           <section>
             <h2>Don't hide important details under abstractions</h2>
-            <br>
-            <pre><code class='ruby'>def padded_take ary, n&#x000A;  pad(ary, n).take(n)&#x000A;end&#x000A;</code></pre>
-            <br>
-            <ul>
-              <li>What are we padding with?</li>
-              <li>Are we padding the left or right side?</li>
-              <li>Is the padding done eagerly or lazily?</li>
-            </ul>
-            <br>
-            <br>
-            <pre class='fragment'><code class='ruby'>def pad ary, n&#x000A;  pad_length = [0, n - ary.length].max&#x000A;  ary + [0] * pad_length&#x000A;end&#x000A;&#x000A;</code></pre>
+            <pre><code class='ruby'>resources :users&#x000A;</code></pre>
+            <pre class='fragment'><code>$ bundle exec rake routes&#x000A;   Prefix Verb   URI Pattern               Controller#Action&#x000A;    users GET    /users(.:format)          users#index&#x000A;          POST   /users(.:format)          users#create&#x000A; new_user GET    /users/new(.:format)      users#new&#x000A;edit_user GET    /users/:id/edit(.:format) users#edit&#x000A;     user GET    /users/:id(.:format)      users#show&#x000A;          PATCH  /users/:id(.:format)      users#update&#x000A;          PUT    /users/:id(.:format)      users#update&#x000A;          DELETE /users/:id(.:format)      users#destroy&#x000A;</code></pre>
+            <pre class='fragment'><code class='ruby'>get    '/users(.:format)'          => 'users#index',  as: :users&#x000A;post   '/users(.:format)'          => 'users#create'&#x000A;get    '/users/new(.:format)'      => 'users#new',    as: :new_user&#x000A;get    '/users/:id/edit(.:format)' => 'users#edit',   as: :edit_user&#x000A;get    '/users/:id(.:format)'      => 'users#show',   as: :user&#x000A;patch  '/users/:id(.:format)'      => 'users#update'&#x000A;put    '/users/:id(.:format)'      => 'users#update'&#x000A;delete '/users/:id(.:format)'      => 'users#destroy'&#x000A;&#x000A;</code></pre>
           </section>
           <section>
             <h2>Function Objects</h2>
@@ -253,14 +245,7 @@
             <pre><code class='ruby'>def notify_user(user, message)&#x000A;  # ...&#x000A;end&#x000A;</code></pre>
           </section>
           <section>
-            <h2>Avoid magic</h2>
-            e.g. routes
-            <pre><code class='ruby'>resources :users&#x000A;</code></pre>
-            <pre class='fragment'><code>$ bundle exec rake routes&#x000A;   Prefix Verb   URI Pattern               Controller#Action&#x000A;    users GET    /users(.:format)          users#index&#x000A;          POST   /users(.:format)          users#create&#x000A; new_user GET    /users/new(.:format)      users#new&#x000A;edit_user GET    /users/:id/edit(.:format) users#edit&#x000A;     user GET    /users/:id(.:format)      users#show&#x000A;          PATCH  /users/:id(.:format)      users#update&#x000A;          PUT    /users/:id(.:format)      users#update&#x000A;          DELETE /users/:id(.:format)      users#destroy&#x000A;</code></pre>
-            <pre class='fragment'><code class='ruby'>get    '/users(.:format)'          => 'users#index',  as: :users&#x000A;post   '/users(.:format)'          => 'users#create'&#x000A;get    '/users/new(.:format)'      => 'users#new',    as: :new_user&#x000A;get    '/users/:id/edit(.:format)' => 'users#edit',   as: :edit_user&#x000A;get    '/users/:id(.:format)'      => 'users#show',   as: :user&#x000A;patch  '/users/:id(.:format)'      => 'users#update'&#x000A;put    '/users/:id(.:format)'      => 'users#update'&#x000A;delete '/users/:id(.:format)'      => 'users#destroy'&#x000A;</code></pre>
-          </section>
-          <section>
-            <h2>Avoid metaprogramming</h2>
+            <h2>Avoid magic (metaprogramming)</h2>
             <br>
             <ul>
               <li>Methods you can't see but can call</li>
@@ -280,18 +265,22 @@
               <li>Often involve singletons</li>
               <li>Often affect state (e.g. Capybara DSL)</li>
             </ul>
-            <section>
-              <h2>Minimize Dependencies</h2>
-              <ul>
-                <li>Don't hide important details under abstractions</li>
-                <li>Use function objects</li>
-                <li>Kick everything off explicitly</li>
-                <li>Caller formats inputs</li>
-                <li>Avoid magic</li>
-                <li>Avoid metaprogramming</li>
-                <li>Avoid DSLs</li>
-              </ul>
-            </section>
+          </section>
+          <section>
+            <h2>Be Explicit</h2>
+            <ul>
+              <li>Don't hide important details under abstractions</li>
+              <li>Use function objects</li>
+              <li>Kick everything off explicitly</li>
+              <li>Caller formats inputs</li>
+              <li>Avoid magic (metaprogramming)</li>
+              <li>Avoid DSLs</li>
+            </ul>
+          </section>
+        </section>
+        <section class='questions_and_comments'>
+          <section>
+            <h1>Questions And Comments</h1>
           </section>
         </section>
       </div>
